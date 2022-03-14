@@ -1,12 +1,13 @@
 import asyncio
 import logging
 
+from .utils import check_config
+
 DEFAULT_TIMEOUT = 10
 DEFAULT_VERIFY_SSL = False
 
 
 class Base:
-    interval = 300
     required = False
     type_name = None
 
@@ -19,9 +20,8 @@ class Base:
             uri = config['URI']  # TODO uri in capital letters?
             timeout = config.get('timeout', DEFAULT_TIMEOUT)
             verify_ssl = config.get('verifySSL', DEFAULT_VERIFY_SSL)
-            interval = data.get('checkConfig', {}).get('metaConfig', {}).get(
-                'checkInterval')
-            assert interval is None or isinstance(interval, int)
+
+            check_config(uri)
         except Exception as e:
             logging.error(f'invalid check configuration: `{e}`')
             return
