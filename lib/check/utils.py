@@ -10,6 +10,7 @@ def http_response(name, payload, response_time, status_code, certificate=None):
     return HTTPResponse(
         certificate, name, payload, response_time, status_code)
 
+
 def check_config(uri):
     o = urlparse(uri)
     if o.scheme not in ('http', 'https'):
