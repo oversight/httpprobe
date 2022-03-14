@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 DEFAULT_TIMEOUT = 10
+DEFAULT_VERIFY_SSL = False
 
 
 class Base:
@@ -15,9 +16,9 @@ class Base:
             # If asset_id is needed in future; uncomment next line:
             # asset_id = data['hostUuid']
             config = data['hostConfig']['probeConfig']['httpProbe']
-            URI = config['URI']  # TODO uri in capital letters?
+            uri = config['URI']  # TODO uri in capital letters?
             timeout = config.get('timeout', DEFAULT_TIMEOUT)
-            ssl = config.get('ssl', False)
+            verify_ssl = config.get('verifySSL', DEFAULT_VERIFY_SSL)
             interval = data.get('checkConfig', {}).get('metaConfig', {}).get(
                 'checkInterval')
             assert interval is None or isinstance(interval, int)
@@ -26,7 +27,7 @@ class Base:
             return
 
         try:
-            state_data = cls.get_data(URI, ssl, timeout)
+            state_data = cls.get_data(uri, verify_ssl, timeout)
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
         except Exception as e:
@@ -35,10 +36,10 @@ class Base:
             return state_data
 
     @classmethod
-    async def get_data(cls, URI, ssl, timeout):
+    async def get_data(cls, uri, verify_ssl, timeout):
         data = None
         try:
-            data = await cls.run_check(URI, ssl, timeout)
+            data = await cls.run_check(uri, verify_ssl, timeout)
         except Exception as err:
             logging.exception(f'HTTP error: `{err}`\n')
             raise
@@ -52,7 +53,7 @@ class Base:
         return state
 
     @staticmethod
-    async def run_check(URI, ssl, timeout):
+    async def run_check(uri, verify_ssl, timeout):
         pass
 
     @staticmethod
