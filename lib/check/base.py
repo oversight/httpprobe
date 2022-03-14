@@ -7,6 +7,7 @@ DEFAULT_TIMEOUT = 10
 class Base:
     interval = 300
     required = False
+    type_name = None
 
     @classmethod
     async def run(cls, data, asset_config=None):

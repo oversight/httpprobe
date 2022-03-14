@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import os
 from agentcoreclient import AgentCoreClient
 from setproctitle import setproctitle
 from lib.check import CHECKS
