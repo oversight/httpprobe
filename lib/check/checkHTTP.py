@@ -14,11 +14,10 @@ class CheckHTTP(Base):
     async def run_check(uri, verify_ssl, timeout):
         start = asyncio.get_event_loop().time()
         aiohttp_timeout = aiohttp.ClientTimeout(total=timeout)
-        async with aiohttp.ClientSession(
-            ssl=verify_ssl,
-            timeout=aiohttp_timeout
-        ) as session:
-            async with session.get(uri) as response:
+        if verify_ssl:
+            verify_ssl = None  # None for default SSL check
+        async with aiohttp.ClientSession(timeout=aiohttp_timeout) as session:
+            async with session.get(uri, ssl=verify_ssl) as response:
                 payload = None
                 try:
                     payload = await response.text('UTF-8')  # str
