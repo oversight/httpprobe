@@ -10,7 +10,6 @@ from lib.version import __version__
 if __name__ == '__main__':
     setproctitle('httpprobe')
 
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
