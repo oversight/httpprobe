@@ -41,13 +41,13 @@ class Base:
         try:
             data = await cls.run_check(uri, verify_ssl, timeout)
         except Exception as err:
-            logging.exception(f'HTTP error: `{err}`\n')
+            logging.exception(f'HTTP error (uri: {uri}): `{err}`\n')
             raise
 
         try:
             state = cls.get_result(data)
         except Exception:
-            logging.exception('HTTP parse error\n')
+            logging.exception(f'HTTP parse error (uri: {uri})\n')
             raise
 
         return state
