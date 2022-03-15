@@ -3,12 +3,11 @@ from collections import namedtuple
 from urllib.parse import urlparse
 
 
-def http_response(name, payload, response_time, status_code, certificate=None):
+def http_response(name, payload, response_time, status_code):
     HTTPResponse = namedtuple(
         'HTTPResponse',
-        ['certificate', 'name', 'payload', 'response_time', 'status_code'])
-    return HTTPResponse(
-        certificate, name, payload, response_time, status_code)
+        ['name', 'payload', 'response_time', 'status_code'])
+    return HTTPResponse(name, payload, response_time, status_code)
 
 
 def check_config(uri):
