@@ -18,7 +18,7 @@ class Base:
             # If asset_id is needed in future; uncomment next line:
             # asset_id = data['hostUuid']
             config = data['hostConfig']['probeConfig']['httpProbe']
-            uri = config['URI']  # TODO uri in capital letters?
+            uri = config['URI']
             timeout = config.get('timeout', DEFAULT_TIMEOUT)
             verify_ssl = config.get('verifySSL', DEFAULT_VERIFY_SSL)
 

@@ -22,7 +22,7 @@ class CheckHTTP(Base):
                 try:
                     payload = await response.text('UTF-8')  # str
                 except UnicodeDecodeError:
-                    payload = await response.read()  # bytes
+                    payload = '<BLOB>'
 
                 return http_response(
                     name=uri,
@@ -35,7 +35,7 @@ class CheckHTTP(Base):
     def on_item(itm):
         return {
             'name': itm.uri,  # (str)
-            'payload': itm.payload,  # (str, if not UTF-8, return BLOB)
+            'payload': itm.payload,  # (str)
             'responseTime': itm.response_time,  # (float, seconds)
             'statusCode': itm.status_code,  # (int, for example 200)
         }
