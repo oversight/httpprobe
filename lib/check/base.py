@@ -28,7 +28,7 @@ class Base:
             return
 
         try:
-            state_data = cls.get_data(uri, verify_ssl, timeout)
+            state_data = await cls.get_data(uri, verify_ssl, timeout)
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
         except Exception as e:
