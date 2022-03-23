@@ -34,7 +34,7 @@ class CheckHTTP(Base):
     @staticmethod
     def on_item(itm):
         return {
-            'name': itm.uri,  # (str)
+            'name': itm.name,  # (str)
             'payload': itm.payload,  # (str)
             'responseTime': itm.response_time,  # (float, seconds)
             'statusCode': itm.status_code,  # (int, for example 200)
