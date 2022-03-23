@@ -5,6 +5,7 @@ from .utils import check_config
 
 DEFAULT_TIMEOUT = 10
 DEFAULT_VERIFY_SSL = False
+DEFAULT_WITH_PAYLOAD = False
 
 
 class Base:
@@ -21,6 +22,7 @@ class Base:
             uri = config['URI']
             timeout = config.get('timeout', DEFAULT_TIMEOUT)
             verify_ssl = config.get('verifySSL', DEFAULT_VERIFY_SSL)
+            with_payload = config.get('withPayload', DEFAULT_WITH_PAYLOAD)
 
             check_config(uri)
         except Exception as e:
@@ -28,7 +30,8 @@ class Base:
             return
 
         try:
-            state_data = await cls.get_data(uri, verify_ssl, timeout)
+            state_data = await cls.get_data(
+                uri, verify_ssl, with_payload, timeout)
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
         except Exception as e:
@@ -37,10 +40,10 @@ class Base:
             return state_data
 
     @classmethod
-    async def get_data(cls, uri, verify_ssl, timeout):
+    async def get_data(cls, uri, verify_ssl, with_payload, timeout):
         data = None
         try:
-            data = await cls.run_check(uri, verify_ssl, timeout)
+            data = await cls.run_check(uri, verify_ssl, with_payload, timeout)
         except Exception as err:
             logging.exception(f'HTTP error (uri: {uri}): `{err}`\n')
             raise
@@ -54,7 +57,7 @@ class Base:
         return state
 
     @staticmethod
-    async def run_check(uri, verify_ssl, timeout):
+    async def run_check(uri, verify_ssl, with_payload, timeout):
         pass
 
     @staticmethod

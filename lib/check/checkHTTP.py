@@ -11,7 +11,7 @@ class CheckHTTP(Base):
     type_name = 'http'
 
     @staticmethod
-    async def run_check(uri, verify_ssl, timeout):
+    async def run_check(uri, verify_ssl, with_payload, timeout):
         start = asyncio.get_event_loop().time()
         aiohttp_timeout = aiohttp.ClientTimeout(total=timeout)
         if verify_ssl:
@@ -19,10 +19,11 @@ class CheckHTTP(Base):
         async with aiohttp.ClientSession(timeout=aiohttp_timeout) as session:
             async with session.get(uri, ssl=verify_ssl) as response:
                 payload = None
-                try:
-                    payload = await response.text('UTF-8')  # str
-                except UnicodeDecodeError:
-                    payload = '<BLOB>'
+                if with_payload:
+                    try:
+                        payload = await response.text('UTF-8')  # str
+                    except UnicodeDecodeError:
+                        payload = '<BLOB>'
 
                 return http_response(
                     name=uri,
@@ -33,9 +34,13 @@ class CheckHTTP(Base):
 
     @staticmethod
     def on_item(itm):
-        return {
+        data = {
             'name': itm.name,  # (str)
-            'payload': itm.payload,  # (str)
             'responseTime': itm.response_time,  # (float, seconds)
             'statusCode': itm.status_code,  # (int, for example 200)
         }
+
+        if isinstance(itm.payload, str):
+            data['payload'] = itm.payload
+
+        return data
