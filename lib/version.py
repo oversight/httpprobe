@@ -1,1 +1,4 @@
-__version__ = '2.0.0'
+# Version string. Examples:
+#  '2.0.0'
+#  '2.0.0-alpha0'
+__version__ = '2.0.1-alpha0'
