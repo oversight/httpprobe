@@ -40,7 +40,7 @@ class Base:
             # Includes:
             # ClientConnectorCertificateError
             # ClientConnectorSSLError
-            logging.exception(f'HTTP SSL error (uri: {uri}): `{err}`\n')
+            logging.error(f'HTTP SSL error (uri: {uri}): `{err}`\n')
             pass
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
