@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 import logging
 
 from .utils import check_config
@@ -32,6 +33,12 @@ class Base:
         try:
             state_data = await cls.get_data(
                 uri, verify_ssl, with_payload, timeout)
+        except aiohttp.ClientSSLError as err:
+            # Includes:
+            # ClientConnectorCertificateError
+            # ClientConnectorSSLError
+            logging.exception(f'HTTP SSL error (uri: {uri}): `{err}`\n')
+            pass
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
         except Exception as e:
