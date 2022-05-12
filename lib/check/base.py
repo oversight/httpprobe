@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 import logging
 
 from .utils import check_config
@@ -6,6 +7,7 @@ from .utils import check_config
 DEFAULT_TIMEOUT = 10
 DEFAULT_VERIFY_SSL = False
 DEFAULT_WITH_PAYLOAD = False
+DEFAULT_ALLOW_REDIRECTS = False
 
 
 class Base:
@@ -23,6 +25,8 @@ class Base:
             timeout = config.get('timeout', DEFAULT_TIMEOUT)
             verify_ssl = config.get('verifySSL', DEFAULT_VERIFY_SSL)
             with_payload = config.get('withPayload', DEFAULT_WITH_PAYLOAD)
+            allow_redirects = config.get(
+                'allowRedirects', DEFAULT_ALLOW_REDIRECTS)
 
             check_config(uri)
         except Exception as e:
@@ -31,7 +35,13 @@ class Base:
 
         try:
             state_data = await cls.get_data(
-                uri, verify_ssl, with_payload, timeout)
+                uri, verify_ssl, with_payload, timeout, allow_redirects)
+        except aiohttp.ClientSSLError as err:
+            # Includes:
+            # ClientConnectorCertificateError
+            # ClientConnectorSSLError
+            logging.error(f'HTTP SSL error (uri: {uri}): `{err}`\n')
+            pass
         except asyncio.TimeoutError:
             raise Exception('Check timed out.')
         except Exception as e:
@@ -40,10 +50,23 @@ class Base:
             return state_data
 
     @classmethod
-    async def get_data(cls, uri, verify_ssl, with_payload, timeout):
+    async def get_data(
+        cls,
+        uri,
+        verify_ssl,
+        with_payload,
+        timeout,
+        allow_redirects
+    ):
         data = None
         try:
-            data = await cls.run_check(uri, verify_ssl, with_payload, timeout)
+            data = await cls.run_check(
+                uri,
+                verify_ssl,
+                with_payload,
+                timeout,
+                allow_redirects
+            )
         except Exception as err:
             logging.exception(f'HTTP error (uri: {uri}): `{err}`\n')
             raise
@@ -57,7 +80,13 @@ class Base:
         return state
 
     @staticmethod
-    async def run_check(uri, verify_ssl, with_payload, timeout):
+    async def run_check(
+        uri,
+        verify_ssl,
+        with_payload,
+        timeout,
+        allow_redirects
+    ):
         pass
 
     @staticmethod
